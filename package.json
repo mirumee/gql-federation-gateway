@@ -1,0 +1,21 @@
+{
+  "name": "gql-federation-gateway",
+  "version": "0.1.0",
+  "description": "",
+  "main": "service.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node service.js"
+  },
+  "keywords": [],
+  "author": "Jakub Draganek <jakub.draganek@mirumee.com",
+  "dependencies": {
+    "@apollo/gateway": "^0.10.5",
+    "apollo-server": "^2.9.4",
+    "dotenv": "^8.2.0",
+    "graphql": "^14.5.8"
+  },
+  "devDependencies": {
+    "prettier": "1.18.2"
+  }
+}
