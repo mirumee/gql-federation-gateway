@@ -1,3 +1,8 @@
+.*
+!.dockerignore
+!.github
+!.gitignore
+
 # Logs
 logs
 *.log
