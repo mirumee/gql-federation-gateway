@@ -12,4 +12,5 @@ function parseEndpoints(conf) {
       name: endpoint.substr(0, delimiter),
       url: endpoint.substr(delimiter + 1)
     };
-  }
+  });
+}
