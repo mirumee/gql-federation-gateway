@@ -1,7 +1,8 @@
 const dotenv = require("dotenv");
 dotenv.config();
 module.exports = {
-  endpoints: parseEndpoints(process.env.ENDPOINTS)
+  endpoints: parseEndpoints(process.env.ENDPOINTS),
+  pollingInterval: getInterval()
 };
 
 function parseEndpoints(conf) {
@@ -13,4 +14,9 @@ function parseEndpoints(conf) {
       url: endpoint.substr(delimiter + 1)
     };
   });
+}
+
+function getInterval() {
+  const defaultInterval = 60000; //ms
+  return process.env.POLLING_INTERVAL || defaultInterval;
 }
