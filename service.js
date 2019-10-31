@@ -4,7 +4,8 @@ const { endpoints } = require("./config");
 
 const gateway = new ApolloGateway({
   serviceList: endpoints,
-  buildService({ name, url }) {
+  experimental_pollInterval: 60,
+  buildService({ url }) {
     return new RemoteGraphQLDataSource({
       url,
       willSendRequest({ request, context }) {
