@@ -9,7 +9,9 @@ const gateway = new ApolloGateway({
     return new RemoteGraphQLDataSource({
       url,
       willSendRequest({ request, context }) {
-        request.http.headers.set("Authorization", context.Authorization);
+        if (context.Authorization) {
+          request.http.headers.set("Authorization", context.Authorization);
+        }
       }
     });
   }
