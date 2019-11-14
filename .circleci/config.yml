@@ -36,11 +36,11 @@ workflows:
           filters:
             branches:
               only:
-                - master
+                - /.*/
       - deploy:
           requires:
             - publish-image
           filters:
             branches:
               only:
-                - master
+                - /.*/
