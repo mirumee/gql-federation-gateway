@@ -26,7 +26,7 @@ jobs:
       - run:
           name: Deploy to ECS
           command: |
-            ecs deploy --region ${AWS_REGION} --timeout -1 ${ECS_CLUSTER_NAME} ${ECS_SERVICE_NAME} -t latest
+            ecs deploy --region ${AWS_REGION} --timeout -1 --no-diff ${ECS_CLUSTER_NAME} ${ECS_SERVICE_NAME} -t latest
 
 workflows:
   version: 2
