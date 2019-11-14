@@ -1,0 +1,50 @@
+version: 2
+jobs:
+  publish-image:
+    docker:
+      - image: circleci/python:3.8
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Install dependencies
+          command: |
+            sudo pip install awscli
+      - run:
+          name: Build Docker image
+          command: |
+            docker build -t mirumee/gql-federation-gateway:latest .
+      - run:
+          name: Publish Docker image
+          command: |
+            echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin
+            docker push mirumee/gql-federation-gateway:latest
+  deploy:
+    docker:
+      - image: circleci/python:3.8
+    steps:
+      - run:
+          name: Install dependencies
+          command: |
+            sudo pip install ecs-deploy
+      - run:
+          name: Deploy to ECS
+          command: |
+            ecs deploy --region ${AWS_REGION} --timeout -1 ${ECS_CLUSTER_NAME} ${ECS_SERVICE_NAME} -t latest
+
+workflows:
+  version: 2
+  publish-and-deploy:
+    jobs:
+      - publish-image:
+          filters:
+            branches:
+              only:
+                - master
+      - deploy:
+          requires:
+            - publish-image
+          filters:
+            branches:
+              only:
+                - master
