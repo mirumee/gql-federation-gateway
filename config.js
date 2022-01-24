@@ -2,7 +2,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 module.exports = {
   serviceList: parseServiceList(process.env.PLUGINS, process.env.API_URL),
-  pollingInterval: getInterval(),
+  pollIntervalInMs: getInterval(),
 };
 
 function parseServiceList(plugins, apiUrl) {

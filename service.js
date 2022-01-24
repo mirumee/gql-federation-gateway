@@ -1,10 +1,10 @@
 const { ApolloServer } = require("apollo-server");
 const { ApolloGateway, RemoteGraphQLDataSource } = require("@apollo/gateway");
-const { serviceList, pollingInterval } = require("./config");
+const { serviceList, pollIntervalInMs } = require("./config");
 
 const gateway = new ApolloGateway({
   serviceList,
-  experimental_pollInterval: pollingInterval,
+  pollIntervalInMs,
   buildService({ url }) {
     return new RemoteGraphQLDataSource({
       url,
