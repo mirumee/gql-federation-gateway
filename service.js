@@ -12,9 +12,9 @@ const gateway = new ApolloGateway({
         if (context.Authorization) {
           request.http.headers.set("Authorization", context.Authorization);
         }
-      }
+      },
     });
-  }
+  },
 });
 
 (async () => {
@@ -25,12 +25,12 @@ const gateway = new ApolloGateway({
     executor,
     context: ({ req }) => {
       return {
-        Authorization: req.headers.authorization || null
+        Authorization: req.headers.authorization || null,
       };
-    }
+    },
   });
 
-  server.listen().then(({ url }) => {
+  server.listen({ port: process.env.PORT || 4000 }).then(({ url }) => {
     console.log(`🚀 Server ready at ${url}`);
   });
 })();
