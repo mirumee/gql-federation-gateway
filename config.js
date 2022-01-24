@@ -1,19 +1,28 @@
 const dotenv = require("dotenv");
 dotenv.config();
 module.exports = {
-  endpoints: parseEndpoints(process.env.ENDPOINTS),
-  pollingInterval: getInterval()
+  serviceList: parseServiceList(process.env.PLUGINS, process.env.API_URL),
+  pollingInterval: getInterval(),
 };
 
-function parseEndpoints(conf) {
-  const endpoints = conf.split(" ");
-  return endpoints.map(endpoint => {
-    const delimiter = endpoint.indexOf(":");
-    return {
-      name: endpoint.substr(0, delimiter),
-      url: endpoint.substr(delimiter + 1)
-    };
-  });
+function parseServiceList(plugins, apiUrl) {
+  const serviceList = [
+    {
+      name: "saleor",
+      url: `${apiUrl}graphql/`,
+    },
+  ];
+
+  serviceList.push(
+    ...plugins.split(",").map((name) => ({
+      name,
+      url: `${apiUrl}plugins/${name}/graphql/`,
+    }))
+  );
+
+  console.log({ serviceList });
+
+  return serviceList;
 }
 
 function getInterval() {
