@@ -11,12 +11,13 @@
     "start": "node service.js"
   },
   "keywords": [],
-  "author": "Jakub Draganek <jakub.draganek@mirumee.com",
+  "author": "Jakub Draganek <jakub.draganek@mirumee.com>",
   "dependencies": {
-    "@apollo/gateway": "^0.10.8",
-    "apollo-server": "^2.9.7",
-    "dotenv": "^8.2.0",
-    "graphql": "^14.5.8"
+    "@apollo/gateway": "^0.46.0",
+    "apollo-server-core": "^3.6.2",
+    "apollo-server-express": "^3.6.2",
+    "dotenv": "^14.2.0",
+    "graphql": "^15.8.0"
   },
   "devDependencies": {
     "prettier": "1.18.2"
