@@ -20,8 +20,6 @@ function parseServiceList(plugins, apiUrl) {
     }))
   );
 
-  console.log({ serviceList });
-
   return serviceList;
 }
 
