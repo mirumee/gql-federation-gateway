@@ -14,7 +14,8 @@
   "author": "Jakub Draganek <jakub.draganek@mirumee.com>",
   "dependencies": {
     "@apollo/gateway": "^0.46.0",
-    "apollo-server": "^3.6.2",
+    "apollo-server-core": "^3.6.2",
+    "apollo-server-express": "^3.6.2",
     "dotenv": "^14.2.0",
     "graphql": "^15.8.0"
   },
