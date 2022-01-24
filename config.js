@@ -1,7 +1,7 @@
 const dotenv = require("dotenv");
 dotenv.config();
 module.exports = {
-  serviceList: parseServiceList(process.env.PLUGINS, process.env.BASE_URL),
+  serviceList: parseServiceList(process.env.PLUGINS, process.env.API_URL),
   pollingInterval: getInterval(),
 };
 
