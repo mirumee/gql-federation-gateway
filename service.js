@@ -23,7 +23,9 @@ const gateway = new ApolloGateway({
 
 (async () => {
   const app = express();
-  const httpServer = http.createServer(app);
+  const httpServer = http.createServer(app, {
+    cors: false,
+  });
   const server = new ApolloServer({
     gateway,
     plugins: [
