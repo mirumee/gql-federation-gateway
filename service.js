@@ -1,8 +1,11 @@
-const { ApolloServer } = require('apollo-server-express');
-const { ApolloServerPluginDrainHttpServer, ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core');
+const { ApolloServer } = require("apollo-server-express");
+const {
+  ApolloServerPluginDrainHttpServer,
+  ApolloServerPluginLandingPageGraphQLPlayground,
+} = require("apollo-server-core");
 const { ApolloGateway, RemoteGraphQLDataSource } = require("@apollo/gateway");
-const express = require('express');
-const http = require('http');
+const express = require("express");
+const http = require("http");
 
 const { serviceList, pollIntervalInMs } = require("./config");
 
@@ -43,6 +46,8 @@ const gateway = new ApolloGateway({
 
   await server.start();
   server.applyMiddleware({ app });
-  await new Promise(resolve => httpServer.listen({ port: process.env.PORT || 4000 }, resolve));
+  await new Promise((resolve) =>
+    httpServer.listen({ port: process.env.PORT || 4000 }, resolve)
+  );
   console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`);
 })();
