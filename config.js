@@ -14,9 +14,9 @@ function parseServiceList(plugins, apiUrl) {
   ];
 
   serviceList.push(
-    ...plugins.split(",").map((name) => ({
+    ...plugins.split(" ").map((name) => ({
       name,
-      url: `${apiUrl}plugins/${name}/graphql/`,
+      url: `${apiUrl}plugins/${name}/`,
     }))
   );
 
