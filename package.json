@@ -9,7 +9,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node service.js",
-    "dev": "API_URL=https://w8-saleor-staging.herokuapp.com/ PLUGINS=social-login,countries npm start"
+    "dev": "API_URL=https://w8-saleor-staging.herokuapp.com/ PLUGINS=\"social-login vendor\" npm start"
   },
   "keywords": [],
   "author": "Jakub Draganek <jakub.draganek@mirumee.com>",
