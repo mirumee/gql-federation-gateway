@@ -26,9 +26,8 @@ const gateway = new ApolloGateway({
 
 (async () => {
   const app = express();
-  const httpServer = http.createServer(app, {
-    cors: false,
-  });
+
+  const httpServer = http.createServer(app);
   const server = new ApolloServer({
     gateway,
     plugins: [
@@ -45,7 +44,17 @@ const gateway = new ApolloGateway({
   });
 
   await server.start();
-  server.applyMiddleware({ app });
+  server.applyMiddleware({
+    app,
+    cors: {
+      // FIXME: Use env var on production whitelist production URLs
+      origin: true,
+      methods: "GET,POST",
+      preflightContinue: false,
+      optionsSuccessStatus: 204,
+      credentials: true,
+    },
+  });
   await new Promise((resolve) =>
     httpServer.listen({ port: process.env.PORT || 4000 }, resolve)
   );
