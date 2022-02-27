@@ -52,7 +52,7 @@ const proxyHeaders = [
 
 
 module.exports = {
+  proxyHeaders,
   subgraphs: parseSubgraphs(PLUGINS, API_URL),
   pollIntervalInMs: getInterval(),
-  proxyHeaders: proxyHeaders
 };
