@@ -7,7 +7,7 @@ const { ApolloGateway, RemoteGraphQLDataSource, IntrospectAndCompose } = require
 const express = require("express");
 const http = require("http");
 
-const { subgraphs, pollIntervalInMs } = require("./config");
+const { subgraphs, pollIntervalInMs, proxyHeaders } = require("./config");
 
 const gateway = new ApolloGateway({
   supergraphSdl: new IntrospectAndCompose({
@@ -19,9 +19,13 @@ const gateway = new ApolloGateway({
       url,
       willSendRequest({ request, context }) {
         const headers = context.headers || {};
-        for (let [header, value] of Object.entries(headers)) {
-          request.http.headers.set(header, value)
-        }
+        Object.entries(headers)
+          .filter(header => proxyHeaders
+            .find(header))
+             .forEach((header) => {
+               const value = headers[header];
+              request.http.headers.set(header, value);
+          })
       },
     });
   },
@@ -62,10 +66,10 @@ const gateway = new ApolloGateway({
     httpServer.listen({ port: process.env.PORT || 4000 }, resolve)
   );
 
-  for (let {name, url} of subgraphs) {
+  for (let { name, url } of subgraphs) {
     console.log(`-- Service ${name} federated from: ${url}`)
   };
-  
+
   console.log('\n');
   console.log(`🚀 Server ready at ${server.graphqlPath}`);
 })();

@@ -41,7 +41,18 @@ function getInterval() {
   return process.env.POLLING_INTERVAL || defaultInterval;
 }
 
+const proxyHeaders = [
+  'Content-Type',
+  'Content-Length',
+  'Accept',
+  'Accept-Language',
+  'User-Agent',
+  'Authorization',
+]
+
+
 module.exports = {
   subgraphs: parseSubgraphs(PLUGINS, API_URL),
   pollIntervalInMs: getInterval(),
+  proxyHeaders: proxyHeaders
 };
