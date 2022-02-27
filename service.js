@@ -3,21 +3,24 @@ const {
   ApolloServerPluginDrainHttpServer,
   ApolloServerPluginLandingPageGraphQLPlayground,
 } = require("apollo-server-core");
-const { ApolloGateway, RemoteGraphQLDataSource } = require("@apollo/gateway");
+const { ApolloGateway, RemoteGraphQLDataSource, IntrospectAndCompose } = require("@apollo/gateway");
 const express = require("express");
 const http = require("http");
 
-const { serviceList, pollIntervalInMs } = require("./config");
+const { subgraphs, pollIntervalInMs } = require("./config");
 
 const gateway = new ApolloGateway({
-  serviceList,
-  pollIntervalInMs,
+  supergraphSdl: new IntrospectAndCompose({
+    subgraphs,
+    pollIntervalInMs,
+  }),
   buildService({ url }) {
     return new RemoteGraphQLDataSource({
       url,
       willSendRequest({ request, context }) {
-        if (context.Authorization) {
-          request.http.headers.set("Authorization", context.Authorization);
+        const headers = context.headers || {};
+        for (let [header, value] of Object.entries(headers)) {
+          request.http.headers.set(header, value)
         }
       },
     });
@@ -38,7 +41,7 @@ const gateway = new ApolloGateway({
     ],
     context: ({ req }) => {
       return {
-        Authorization: req.headers.authorization || null,
+        headers: req.headers,
       };
     },
   });
@@ -58,5 +61,11 @@ const gateway = new ApolloGateway({
   await new Promise((resolve) =>
     httpServer.listen({ port: process.env.PORT || 4000 }, resolve)
   );
-  console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`);
+
+  for (let {name, url} of subgraphs) {
+    console.log(`-- Service ${name} federated from: ${url}`)
+  };
+  
+  console.log('\n');
+  console.log(`🚀 Server ready at ${server.graphqlPath}`);
 })();

@@ -1,5 +1,4 @@
-FROM node:10
-ENV ENDPOINTS=endpoint:http://localhost:8000/graphql/
+FROM node:16
 ENV POLLING_INTERVAL=6000
 
 # Create app directory

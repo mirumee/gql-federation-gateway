@@ -9,7 +9,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node service.js",
-    "dev": "API_URL=https://w8-saleor-staging.herokuapp.com/ PLUGINS=\"social-login vendor\" npm start"
+    "dev": "nodemon service.js"
   },
   "keywords": [],
   "author": "Jakub Draganek <jakub.draganek@mirumee.com>",
@@ -18,9 +18,11 @@
     "apollo-server-core": "^3.6.2",
     "apollo-server-express": "^3.6.2",
     "dotenv": "^14.2.0",
+    "express": "^4.17.3",
     "graphql": "^15.8.0"
   },
   "devDependencies": {
+    "nodemon": "^2.0.15",
     "prettier": "1.18.2"
   }
 }

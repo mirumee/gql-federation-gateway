@@ -1,29 +1,47 @@
 const dotenv = require("dotenv");
 dotenv.config();
-module.exports = {
-  serviceList: parseServiceList(process.env.PLUGINS, process.env.API_URL),
-  pollIntervalInMs: getInterval(),
-};
 
-function parseServiceList(plugins, apiUrl) {
-  const serviceList = [
+function parsePlugins(sourceString) {
+  if (sourceString) {
+    return sourceString.split(',').map(s => s.trim()).filter(Boolean);
+  }
+
+  return [];
+}
+
+// dashboard uses API_URI, so we give it a try as well
+const API_URL = process.env.API_URL || process.env.API_URI;
+const PLUGINS = parsePlugins(process.env.PLUGINS);
+
+if (!API_URL) {
+  throw new Error("Must configure process.env.API_URL")
+}
+
+function parseSubgraphs(plugins, apiUrl) {
+  const subgraphs = [
     {
       name: "saleor",
-      url: `${apiUrl}graphql/`,
+      url: `${apiUrl}/graphql/`,
     },
   ];
 
-  serviceList.push(
-    ...plugins.split(" ").map((name) => ({
-      name,
-      url: `${apiUrl}plugins/${name}/`,
-    }))
+  subgraphs.push(
+    ...plugins
+      .map((name) => ({
+        name,
+        url: `${apiUrl}/plugins/${name}/`,
+      }))
   );
 
-  return serviceList;
+  return subgraphs;
 }
 
 function getInterval() {
   const defaultInterval = 60000; //ms
   return process.env.POLLING_INTERVAL || defaultInterval;
 }
+
+module.exports = {
+  subgraphs: parseSubgraphs(PLUGINS, API_URL),
+  pollIntervalInMs: getInterval(),
+};
