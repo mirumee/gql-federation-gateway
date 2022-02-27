@@ -21,7 +21,7 @@ const gateway = new ApolloGateway({
         const headers = context.headers || {};
         Object.entries(headers)
           .filter(header => proxyHeaders
-            .find(header))
+            .find(allowedHeader => allowedHeader == header))
              .forEach((header) => {
                const value = headers[header];
               request.http.headers.set(header, value);
