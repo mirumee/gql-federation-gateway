@@ -1,36 +1,78 @@
-const { ApolloServer } = require("apollo-server");
-const { ApolloGateway, RemoteGraphQLDataSource } = require("@apollo/gateway");
-const { endpoints, pollingInterval } = require("./config");
+const { ApolloServer } = require("apollo-server-express");
+const {
+  ApolloServerPluginDrainHttpServer,
+  ApolloServerPluginLandingPageGraphQLPlayground,
+} = require("apollo-server-core");
+const { ApolloGateway, RemoteGraphQLDataSource, IntrospectAndCompose } = require("@apollo/gateway");
+const express = require("express");
+const http = require("http");
+
+const { subgraphs, pollIntervalInMs, isAllowedHeader } = require("./config");
 
 const gateway = new ApolloGateway({
-  serviceList: endpoints,
-  experimental_pollInterval: pollingInterval,
+  supergraphSdl: new IntrospectAndCompose({
+    subgraphs,
+    pollIntervalInMs,
+  }),
   buildService({ url }) {
     return new RemoteGraphQLDataSource({
       url,
       willSendRequest({ request, context }) {
-        if (context.Authorization) {
-          request.http.headers.set("Authorization", context.Authorization);
+        const headers = context.headers;
+
+        if (headers) {
+          const entries = Object.entries(headers);
+
+          entries.forEach(([header, value]) => {
+            if (isAllowedHeader(header)){
+              request.http.headers.set(header, value);
+            }
+          })
         }
-      }
+      },
     });
-  }
+  },
 });
 
 (async () => {
-  const { schema, executor } = await gateway.load();
+  const app = express();
 
+  const httpServer = http.createServer(app);
   const server = new ApolloServer({
-    schema,
-    executor,
+    gateway,
+    plugins: [
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+      ApolloServerPluginLandingPageGraphQLPlayground({
+        httpServer: httpServer,
+      }),
+    ],
     context: ({ req }) => {
       return {
-        Authorization: req.headers.authorization || null
+        headers: req.headers,
       };
-    }
+    },
   });
 
-  server.listen().then(({ url }) => {
-    console.log(`🚀 Server ready at ${url}`);
+  await server.start();
+  server.applyMiddleware({
+    app,
+    cors: {
+      // FIXME: Use env var on production whitelist production URLs
+      origin: true,
+      methods: "GET,POST",
+      preflightContinue: false,
+      optionsSuccessStatus: 204,
+      credentials: true,
+    },
   });
+  await new Promise((resolve) =>
+    httpServer.listen({ port: process.env.PORT || 4000 }, resolve)
+  );
+
+  for (let { name, url } of subgraphs) {
+    console.log(`-- Service ${name} federated from: ${url}`)
+  };
+
+  console.log('\n');
+  console.log(`🚀 Server ready at ${server.graphqlPath}`);
 })();

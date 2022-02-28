@@ -2,23 +2,14 @@
 
 This is a simple gateway that exposes uniform GraphQL API for multiple services using Apollo Federation. Runs on Apollo Server.
 
-## Configuration
+This is a fork of: [saleor/gql-federation-gateway](https://github.com/mirumee/gql-federation-gateway)
 
-### Services
-The only one settings that service really needs is a list of GraphQL endpoints in the federation along with their identifying aliases:
 
-```bash
-export ENDPOINTS="first:http://host:8000/graphql/ second:http://host2:8000/graphql/"
-```
+### Environment variables (* mandatory):
 
-Endpoints must be separated by spaces and a name is finished by the first colon. 
+- `API_URL`: The base graphql API (*)  
+- `PLUGINS`: A comma separated list of plugin IDs from saleor
+- `POLLING_INTERVAL`: Apollo pollIntervalInMs
 
-### Polling
 
-Gateway will poll services to update schema on regular intervals. Default interval is 6 seconds, you can change it with _POLLING_INTERVAL_ environment variablem which is in miliseconds.
-
-```bash
-export POLLING_INTERVAL=10000
-```
-
-This whill set polling interval to 10 seconds.
+Run with `npm start`, open in `http://localhost:4000/graphql`
