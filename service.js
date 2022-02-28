@@ -7,7 +7,7 @@ const { ApolloGateway, RemoteGraphQLDataSource, IntrospectAndCompose } = require
 const express = require("express");
 const http = require("http");
 
-const { subgraphs, pollIntervalInMs, proxyHeaders } = require("./config");
+const { subgraphs, pollIntervalInMs, isAllowedHeader } = require("./config");
 
 const gateway = new ApolloGateway({
   supergraphSdl: new IntrospectAndCompose({
@@ -18,14 +18,17 @@ const gateway = new ApolloGateway({
     return new RemoteGraphQLDataSource({
       url,
       willSendRequest({ request, context }) {
-        const headers = context.headers || {};
-        Object.entries(headers)
-          .filter(header => proxyHeaders
-            .find(allowedHeader => allowedHeader == header))
-             .forEach((header) => {
-               const value = headers[header];
+        const headers = context.headers;
+
+        if (headers) {
+          const entries = Object.entries(headers);
+
+          entries.forEach(([header, value]) => {
+            if (isAllowedHeader(header)){
               request.http.headers.set(header, value);
+            }
           })
+        }
       },
     });
   },
