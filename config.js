@@ -48,11 +48,13 @@ const proxyHeaders = [
   'Accept-Language',
   'User-Agent',
   'Authorization',
+  'Origin',
 ]
 
+const isAllowedHeader = (header) => !!proxyHeaders.find(allowedHeader => allowedHeader.toLowerCase() === header.toLowerCase())
 
 module.exports = {
-  proxyHeaders,
+  isAllowedHeader,
   subgraphs: parseSubgraphs(PLUGINS, API_URL),
   pollIntervalInMs: getInterval(),
 };
