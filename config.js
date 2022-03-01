@@ -41,17 +41,11 @@ function getInterval() {
   return process.env.POLLING_INTERVAL || defaultInterval;
 }
 
-const proxyHeaders = [
-  'Content-Type',
-  'Content-Length',
-  'Accept',
-  'Accept-Language',
-  'User-Agent',
-  'Authorization',
-  'Origin',
+const blackListedHeaders = [
+  'Host',
 ]
 
-const isAllowedHeader = (header) => !!proxyHeaders.find(allowedHeader => allowedHeader.toLowerCase() === header.toLowerCase())
+const isAllowedHeader = (header) => !blackListedHeaders.find(allowedHeader => allowedHeader.toLowerCase() === header.toLowerCase())
 
 module.exports = {
   isAllowedHeader,
